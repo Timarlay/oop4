@@ -38,7 +38,15 @@ class Result{
     public string teacher = "undefined";
     public int points;
 
+    public Result(string subject_name, string teacher_name, int points_amount){
+        subject = subject_name;
+        teacher = teacher_name;
+        points = points_amount;
+    }
 
+    public void Print(){
+        Console.WriteLine($"Subject: {subject}, Teacher: {teacher}, Points: {points}");
+    }
 }
 
 class Student{
@@ -49,15 +57,34 @@ class Student{
     public Result[] results = {};
 
     public float GetAveragePoints(){
-        return 0;
+        float total_amount = 0;
+        foreach (Result result in results){   
+            total_amount += result.points;
+        }
+
+        return total_amount/results.Length;
     }
 
-    public int GetBestSubject(){
-        return 0;
+    public string GetBestSubject(){
+        Result best_result = results[0];
+        foreach (Result result in results){   
+            if (result.points > best_result.points){
+                best_result = result;
+            }
+        }
+
+        return best_result.subject;
     }
 
-    public int GetWorstSubject(){
-        return 0;
+    public string GetWorstSubject(){
+        Result worst_result = results[0];
+        foreach (Result result in results){   
+            if (result.points < worst_result.points){
+                worst_result = result;
+            }
+        }
+
+        return worst_result.subject;
     }
 }
 
