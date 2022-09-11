@@ -38,6 +38,12 @@ class Result{
     public string teacher = "undefined";
     public int points;
 
+    public Result(){
+        subject = Program.StringInput("Input subject name: ");
+        teacher = Program.StringInput("Input teacher name: ");
+        points = Program.IntegerInput("Input points amount: ");
+    }
+
     public Result(string subject_name, string teacher_name, int points_amount){
         subject = subject_name;
         teacher = teacher_name;
@@ -55,6 +61,25 @@ class Student{
     public string group = "undefined";
     public int year;
     public Result[] results = {};
+
+    public Student(){
+        name = Program.StringInput("Input student name: ");
+        surname = Program.StringInput("Input student surname: ");
+        group = Program.StringInput("Input student group: ");
+        year = Program.IntegerInput("Input student year: ");
+        int count_results = Program.IntegerInput("Input count results: ");
+        for (int i = 0; i < count_results; i++){
+            results.Append(new Result()).ToArray();
+        }
+    }
+
+    public Student(string student_name, string student_surname, string student_group, int student_year, Result[] student_results){
+        name = student_name;
+        surname = student_surname;
+        group = student_group;
+        year = student_year;
+        results = student_results;
+    }
 
     public float GetAveragePoints(){
         float total_amount = 0;
@@ -86,30 +111,100 @@ class Student{
 
         return worst_result.subject;
     }
+
+    public void Print(){
+        Console.WriteLine($"\nName: {name}, Surname: {surname}, Group: {group}, Year: {year}, Results:");
+        foreach (Result result in results){   
+            result.Print();
+        }
+    }
 }
 
 class Program{
-    public void ReadStudentsArray(){
 
+    static void Main(string[] args)
+    {
+        int students_count = Program.IntegerInput("Input student year: ");
+        Student[] students = Program.ReadStudentsArray(students_count);
+        //Test in all
     }
 
-    public void PrintStudent(){
-        
+    public static Student[] ReadStudentsArray(int students_count){
+        Student[] students_array = {};
+
+        for (int i = 0; i < students_count; i++){
+            Student student = new Student();
+            students_array.Append(student).ToArray();
+        }
+
+        return students_array;
     }
 
-    public void PrintStudents(){
-        
+    public static void PrintStudent(Student student){
+        student.Print();
     }
 
-    public void GetStudentsInfo(){
-        
+    public static void PrintStudents(Student[] students){
+        foreach (Student student in students){   
+            student.Print();
+        }
     }
 
-    public void SortStudentsByPoints(){
-        
+    public static void GetStudentsInfo(Student[] students, out float worst_points, out float best_points){
+        float[] students_average_points = {};
+        foreach (Student student in students){   
+            students_average_points.Append(student.GetAveragePoints()).ToArray();
+        }
+        worst_points = students_average_points[0];
+        best_points = students_average_points[0];
+
+        foreach(float point in students_average_points){
+            if (point > best_points){
+                best_points = point;
+            }
+
+            if (point < best_points){
+                worst_points = point;
+            }
+        }
     }
 
-    public void SortStudentsByName(){
-        
+    public static void SortStudentsByPoints(Student[] students){
+        var sorted_students = students.OrderBy(ob => ob.GetAveragePoints()).ToArray();
+        Program.PrintStudents(sorted_students);
+    }
+
+    public static void SortStudentsByName(Student[] students){
+        var sorted_students = students.OrderBy(ob => ob.surname).ThenBy(ob => ob.name).ToArray();
+        Program.PrintStudents(sorted_students);
+    }
+
+    public static int IntegerInput(string title){
+        int result = 0;
+        bool is_valid = false;
+
+        do {
+            Console.Write(title);
+            is_valid = int.TryParse(Console.ReadLine(), out result);
+            if (is_valid == false)
+                Console.WriteLine("Input error! Try again..");
+        } while (!is_valid);
+
+        return result;
+    }
+
+    public static string StringInput(string title){
+        string? result;
+        bool is_valid = false;
+
+        do {
+            Console.Write(title);
+            result = Console.ReadLine();
+            is_valid = !string.IsNullOrEmpty(result);
+            if (is_valid == false)
+                Console.WriteLine("Input error! Try again..");
+        } while (!is_valid);
+
+        return result;
     }
 }
